@@ -4,13 +4,13 @@ import com.firstTrial.demo.Entities.Teacher;
 import com.firstTrial.demo.Repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class TeacherService {
+
     @Autowired
-    TeacherRepository teacherRepository;
+    private TeacherRepository teacherRepository;
 
     public List<Teacher> getTeachers(){
         return teacherRepository.findAll();
