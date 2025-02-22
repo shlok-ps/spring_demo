@@ -1,11 +1,7 @@
 package com.firstTrial.demo.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.UUID;
 
 @Entity
@@ -15,4 +11,6 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.UUID)
     public UUID id;
     public String name;
+    @Column(nullable = false)
+    public String phoneNumber;
 }
