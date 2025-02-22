@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="PINECONE" class="com.firstTrial.demo.logging.PineconeLogAppender">
-        <pineconeApiKey>YOUR_PINECONE_API_KEY</pineconeApiKey>
-        <pineconeIndexUrl>https://your-index.svc.region.pinecone.io</pineconeIndexUrl>
+        <pineconeApiKey>pcsk_5Zs2pR_DHZzF7nQa4HcJDYsbDfLL5DXBpn2BxZXb55u39zhDLzGRCZfGG1hXGT9tXk7szb</pineconeApiKey>
+        <pineconeIndexUrl>https://logs-vector-0zldvla.svc.aped-4627-b74a.pinecone.io</pineconeIndexUrl>
     </appender>
 
     <root level="INFO">

@@ -13,9 +13,9 @@ import java.util.concurrent.Executors;
 
 public class PineconeLogAppender extends AppenderBase<ILoggingEvent> {
 
-    private String pineconeApiKey;
+    private String pineconeApiKey = "pcsk_5Zs2pR_DHZzF7nQa4HcJDYsbDfLL5DXBpn2BxZXb55u39zhDLzGRCZfGG1hXGT9tXk7szb";
     // pineconeIndexUrl should be your index base URL (e.g. https://your-index.svc.us-west1-gcp.pinecone.io)
-    private String pineconeIndexUrl;
+    private String pineconeIndexUrl = "https://logs-vector-0zldvla.svc.aped-4627-b74a.pinecone.io";
     private RestTemplate restTemplate;
     // Executor for asynchronous HTTP calls
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();

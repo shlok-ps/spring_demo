@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/teachers")
@@ -16,15 +17,28 @@ public class TeacherController {
     @Autowired
     private TeacherService teacherService;
 
-    @GetMapping("")
-    public List<Teacher> getAllTeachers(){
-        log.info("Fetching all teachers");
+    @GetMapping("/all")
+    public List<Teacher> getAllTeachers() {
+        log.info("API call: getAllTeachers");
         return teacherService.getTeachers();
     }
 
-    @PostMapping("")
-    public Teacher addTeacher(@RequestBody Teacher teacher){
-        log.info("Adding teacher: {}", teacher);
+    @PostMapping("/add")
+    public Teacher addTeacher(@RequestBody Teacher teacher) {
+        log.info("API call: addTeacher - {}", teacher);
         return teacherService.addTeacher(teacher);
+    }
+
+    @PutMapping("/update")
+    public Teacher updateTeacher(@RequestBody Teacher teacher) {
+        log.info("API call: updateTeacher - {}", teacher);
+        return teacherService.updateTeacher(teacher);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteTeacher(@PathVariable UUID id) {
+        log.info("API call: deleteTeacher with id: {}", id);
+        teacherService.deleteTeacher(id);
+        return "Teacher deleted with id: " + id;
     }
 }
