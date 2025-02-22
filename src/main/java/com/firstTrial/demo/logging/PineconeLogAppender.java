@@ -7,14 +7,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PineconeLogAppender extends AppenderBase<ILoggingEvent> {
 
     private String pineconeApiKey;
+    // pineconeIndexUrl should be your index base URL (e.g. https://your-index.svc.us-west1-gcp.pinecone.io)
     private String pineconeIndexUrl;
     private RestTemplate restTemplate;
+    // Executor for asynchronous HTTP calls
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
@@ -26,23 +29,44 @@ public class PineconeLogAppender extends AppenderBase<ILoggingEvent> {
     @Override
     protected void append(ILoggingEvent event) {
         try {
-            float[] vector = getEmbeddingFromLog(event.getFormattedMessage());
-            LogPayload payload = new LogPayload(
-                    event.getTimeStamp(),
-                    event.getLevel().toString(),
-                    event.getFormattedMessage(),
-                    vector
-            );
+            // Generate a unique vector id
+            String vectorId = "log-" + event.getTimeStamp() + "-" + UUID.randomUUID().toString();
+
+            // Convert log message to an embedding vector (dummy logic; replace with your actual embedding method)
+            float[] vectorArray = getEmbeddingFromLog(event.getFormattedMessage());
+            List<Float> vectorValues = new ArrayList<>();
+            for (float v : vectorArray) {
+                vectorValues.add(v);
+            }
+
+            // Create metadata from the log event details
+            Map<String, Object> metadata = new HashMap<>();
+            metadata.put("timestamp", event.getTimeStamp());
+            metadata.put("level", event.getLevel().toString());
+            metadata.put("message", event.getFormattedMessage());
+
+            // Build the PineconeVector object
+            PineconeVector pineconeVector = new PineconeVector(vectorId, vectorValues, metadata);
+
+            // Wrap it into an upsert request (Pinecone expects a JSON object with a "vectors" array)
+            PineconeUpsertRequest upsertRequest = new PineconeUpsertRequest(Collections.singletonList(pineconeVector));
+
+            // Asynchronously send the upsert request
             executorService.submit(() -> {
                 try {
                     HttpHeaders headers = new HttpHeaders();
                     headers.set("Api-Key", pineconeApiKey);
                     headers.setContentType(MediaType.APPLICATION_JSON);
-                    HttpEntity<LogPayload> entity = new HttpEntity<>(payload, headers);
-                    String url = pineconeIndexUrl + "/upsert";
+
+                    HttpEntity<PineconeUpsertRequest> entity = new HttpEntity<>(upsertRequest, headers);
+                    // The endpoint is typically /vectors/upsert as per Pinecone docs.
+                    String url = pineconeIndexUrl + "/vectors/upsert";
+
+                    // Execute the POST request
                     String response = restTemplate.postForObject(url, entity, String.class);
+                    // Optionally log or process the response if needed
                 } catch (Exception e) {
-                    addError("Error sending log to Pinecone", e);
+                    addError("Error sending log vector to Pinecone", e);
                 }
             });
         } catch (Exception e) {
@@ -50,8 +74,8 @@ public class PineconeLogAppender extends AppenderBase<ILoggingEvent> {
         }
     }
 
+    // we need to replace for actual format
     private float[] getEmbeddingFromLog(String logMessage) {
-        // Rwe need actual embedding logic. for logs print
         return new float[]{0.1f, 0.2f, 0.3f};
     }
 

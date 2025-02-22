@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="PINECONE" class="com.firstTrial.demo.logging.PineconeLogAppender">
+        <pineconeApiKey>YOUR_PINECONE_API_KEY</pineconeApiKey>
+        <pineconeIndexUrl>https://your-index.svc.region.pinecone.io</pineconeIndexUrl>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="PINECONE" />
+    </root>
+</configuration>
